@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const { getUsers } = require("./exercises/exercise-1.3");
-const { addUser } = require("./exercises/exercise-1.4");
+//const { addUser } = require("./exercises/exercise-1.4");
 
 const PORT = process.env.PORT || 8000;
 
@@ -16,6 +16,18 @@ express()
   .use("/", express.static(__dirname + "/"))
 
   // exercise 1
+  .get('/exercise-1/users', async (req, res) => {
+    try {
+      const users = await getUsers('exercise_1');
+      if(users.length) {
+        res.status(200).json({status: 200, users});
+      } else {
+        res.status(404).json({status: 404, cause: "Data is empty"});
+      }
+    } catch(err) {
+      res.status(404).json({status: 404, err});
+    }
+  })
 
   // exercise 2
 
