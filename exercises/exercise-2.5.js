@@ -1,4 +1,5 @@
 const { MongoClient } = require("mongodb");
+const assert = require("assert");
 
 require("dotenv").config();
 const { MONGO_URI } = process.env;
@@ -8,7 +9,7 @@ const options = {
   useUnifiedTopology: true,
 };
 
-const getGreeting = async (req, res) => {
+const deleteGreeting = async (req, res) => {
     let { language } = req.params;
     language = language.toLowerCase();
     language = language.split('');
@@ -20,12 +21,13 @@ const getGreeting = async (req, res) => {
         await client.connect();
 
         const db = client.db('exercise_1');
-        await db.collection("greetings").findOne({ lang: language }, (err, result) => {
-        result
-            ? res.status(200).json({ status: 200, language, data: result })
-            : res.status(404).json({ status: 404, language, data: "Not Found" });
+        const r = await db.collection("greetings").deleteOne({ lang: language });
+        assert.equal(1, r.deletedCount);
+        
+        res.status(204).json({ status: 204, language: "deleted" })
+        
         client.close();
-        });
+
 
       } catch (err) {
         console.log(err.stack);
@@ -33,4 +35,4 @@ const getGreeting = async (req, res) => {
       }
 };
 
-module.exports = { getGreeting }
+module.exports = { deleteGreeting }
