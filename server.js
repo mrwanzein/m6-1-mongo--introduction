@@ -4,7 +4,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const { getUsers } = require("./exercises/exercise-1.3");
-//const { addUser } = require("./exercises/exercise-1.4");
+const { addUser } = require("./exercises/exercise-1.4");
 
 const PORT = process.env.PORT || 8000;
 
@@ -26,6 +26,17 @@ express()
       }
     } catch(err) {
       res.status(404).json({status: 404, err});
+    }
+  })
+
+  .post('/exercise-1/users', async (req, res) => {
+    const user = req.body;
+    
+    try {
+      await addUser('exercise_1', user);
+      res.status(201).json({staus: 201, payload: user});
+    } catch(err) {
+      res.status(400).json({staus: 400, err});
     }
   })
 
